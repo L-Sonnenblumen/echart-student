@@ -1,0 +1,494 @@
+/* ==========================================
+   1. 全局变量与基础重置
+========================================== */
+:root {
+  /* 调整头部高度，让头部显得更宽大、更大气 */
+  --header-h: 64px;
+  --safe-bottom: env(safe-area-inset-bottom, 16px);
+  --ink: #1c1c2e;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent; /* 去除移动端点击高亮 */
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  /* 现代化的移动端中文字体栈 */
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Helvetica Neue',
+    Helvetica,
+    Segoe UI,
+    Arial,
+    Roboto,
+    'PingFang SC',
+    'miui',
+    'Hiragino Sans GB',
+    'Microsoft Yahei',
+    sans-serif;
+  background: #f4f7fb; /* 极光灰底色，带一点点蓝 */
+  overflow: hidden; /* 彻底禁止外层滚动 */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================
+   2. 主容器与布局
+========================================== */
+.chat-wrapper {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  background: #f4f7fb;
+  overflow: hidden;
+}
+
+/* ==========================================
+   3. 顶部导航栏 (蓝白渐变 + 弥散阴影)
+========================================== */
+.chat-header {
+  height: var(--header-h);
+  /* 高级科技蓝渐变 */
+  background: linear-gradient(135deg, #2b5df2 0%, #5a85f6 100%);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(43, 93, 242, 0.15); /* 蓝色弥散阴影 */
+}
+
+.chat-header-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #ffffff; /* 按钮纯白 */
+  cursor: pointer;
+  border-radius: 50%;
+  transition: opacity 0.2s;
+}
+
+.chat-header-btn:active {
+  opacity: 0.6;
+}
+
+.chat-header-title {
+  flex: 1;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff; /* 标题纯白 */
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================
+   4. 消息面板区 (支持内部滚动)
+========================================== */
+.chat-panel {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  -webkit-overflow-scrolling: touch; /* iOS 丝滑滚动 */
+}
+/* 隐藏面板内部的滚动条 */
+.chat-panel::-webkit-scrollbar {
+  display: none;
+}
+
+.msg-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: 100%;
+}
+.msg-row.user {
+  flex-direction: row-reverse; /* 用户消息靠右 */
+}
+
+/* ==========================================
+   5. 头像与气泡样式
+========================================== */
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.avatar-ai {
+  background: #ffffff;
+  border: 1px solid rgba(43, 93, 242, 0.15);
+}
+.avatar-user {
+  background: linear-gradient(135deg, #8ba8fa 0%, #5a85f6 100%);
+  color: white;
+}
+
+.bubble {
+  max-width: 72%;
+  padding: 12px 18px;
+  border-radius: 18px; /* 圆润风格 */
+  font-size: 15px;
+  line-height: 1.6;
+  word-break: break-word;
+  position: relative;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+/* AI 的白底气泡 */
+.bubble-ai {
+  background: #ffffff;
+  color: var(--ink);
+  border-top-left-radius: 4px; /* 左上角变尖 */
+  border: 1px solid rgba(43, 93, 242, 0.08);
+}
+
+/* 用户的蓝色气泡 */
+.bubble-user {
+  background: linear-gradient(135deg, #2b5df2 0%, #5a85f6 100%);
+  color: #ffffff;
+  border-top-right-radius: 4px; /* 右上角变尖 */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(43, 93, 242, 0.2);
+}
+.bubble-user span {
+  color: #ffffff;
+  font-weight: 500;
+}
+.bubble-user:active {
+  transform: scale(0.97);
+  filter: brightness(0.95);
+}
+
+/* ==========================================
+   6. 底部语音输入区
+========================================== */
+.talk-area {
+  padding: 12px 20px;
+  padding-bottom: calc(16px + var(--safe-bottom));
+  background: rgba(250, 249, 246, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 100;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.03);
+}
+
+/* 语音按钮本体 */
+.record-btn {
+  width: 100%;
+  height: 52px; /* 按钮高度适度增加 */
+  border-radius: 26px; /* 完美的半圆角药丸 */
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  background: #ffffff;
+  color: var(--ink);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  -webkit-touch-callout: none; /* 禁用系统长按菜单 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.record-btn:active {
+  transform: scale(0.97);
+}
+.record-btn.recording {
+  background: #2b5df2; /* 录音中变为主题蓝 */
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(43, 93, 242, 0.4);
+}
+
+/* ==========================================
+   7. 录音悬浮指示器与动画
+========================================== */
+.record-indicator {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.record-indicator.show {
+  opacity: 1;
+  visibility: visible;
+  top: -70px; /* 录音时浮出 */
+}
+/* 小箭头 */
+.record-indicator::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid var(--ink);
+}
+
+/* 录音波纹动画 */
+.voice-waves {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+}
+.wave-bar {
+  width: 3px;
+  border-radius: 2px;
+  animation: wave-bounce 0.6s infinite ease-in-out alternate;
+}
+.wave-bar:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.wave-bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.wave-bar:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+@keyframes wave-bounce {
+  0% {
+    height: 4px;
+  }
+  100% {
+    height: 18px;
+  }
+}
+
+/* ==========================================
+   8. AI打字机光标
+========================================== */
+.cursor-blink {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--ink);
+  vertical-align: middle;
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ==========================================
+   全局变量 (如果被删除了，请补上这几个登录页用到的颜色)
+========================================== */
+:root {
+  --surface2: #faf9f6;
+  --ink: #1c1c2e;
+  --border: #e2ddd6;
+  --accent: #4361ee;
+}
+
+/* ==========================================
+   核心外层容器 (手机壳效果)
+========================================== */
+.app-container {
+  width: 100vw;
+  max-width: 480px; /* 适配PC端预览，居中显示像手机 */
+  min-height: 100vh;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+}
+
+/* ==========================================
+   公共表单组件样式 (登录页的输入框和按钮)
+========================================== */
+.m-input {
+  width: 100%;
+  padding: 14px 14px 14px 42px; /* 左侧留出 42px 给图标占位 */
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--ink);
+  background: var(--surface2);
+  outline: none;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.m-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.12);
+  background: white;
+}
+
+.m-btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.m-btn-primary {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 4px 16px rgba(67, 97, 238, 0.35);
+}
+
+.m-btn-primary:active,
+.m-btn-primary:disabled {
+  transform: scale(0.98);
+  opacity: 0.85;
+}
+
+/* ==========================================
+   9. 底部输入区新布局 (图片+语音)
+========================================== */
+.talk-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.img-upload-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: none;
+  font-size: 24px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.img-upload-btn:active {
+  transform: scale(0.92);
+  background: #f0f0f0;
+}
+
+/* 调整录音按钮以适应 flex 布局 */
+.talk-container .record-btn {
+  flex: 1; /* 撑满剩余空间 */
+}
+
+/* ==========================================
+   10. 聊天气泡里的图片样式
+========================================== */
+.bubble-image-wrapper {
+  background: transparent;
+  padding: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 65%; /* 图片不需要像文字那么宽 */
+  cursor: zoom-in;
+  display: flex;
+}
+.bubble-image-wrapper img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+.bubble-image-wrapper:active {
+  opacity: 0.85;
+}
+
+/* ==========================================
+   11. 图片全屏预览浮层
+========================================== */
+.image-preview-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  opacity: 0;
+  animation: fadeIn 0.2s forwards;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+.image-preview-overlay img {
+  max-width: 100vw;
+  max-height: 100vh;
+  object-fit: contain;
+  transform: scale(0.95);
+  animation: scaleIn 0.2s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes scaleIn {
+  to {
+    transform: scale(1);
+  }
+}
