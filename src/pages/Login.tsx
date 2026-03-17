@@ -73,9 +73,9 @@ export default function Login() {
             AI
           </div>
           <h2 style={{ color: 'var(--text-main)', fontSize: '24px' }}>
-            概率与数理统计
+            伴学系统
           </h2>
-          <p style={{ color: 'var(--text-sub)', marginTop: '8px' }}>通灵AI</p>
+          <p style={{ color: 'var(--text-sub)', marginTop: '8px' }}>智阅</p>
         </div>
 
         <form
